@@ -4,91 +4,143 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-
+using Unit4.CollectionsLib;
 
 namespace ConsoleApp4
 {
-    internal class IntNode
+    internal class Program
     {
-        //class + basic functions
-        private int value;
-        private IntNode next;
-
-        public IntNode(int value, IntNode next)
+        static void Main(string[] args)
         {
-            this.value = value;
-            this.next = next;
+            Random rnd = new Random();
+            //check-quest 5
+            Node<int> check5_1 = Build();
+            Node<int> check5_2 = Build(5, 20, 12);
+            int[] arrlist = { 1, 2, 3 };
+            Node<int> check5_3 = Build(arrlist);
+            Show(check5_1);
+            Show(check5_2);
+            Show(check5_3);
+            Console.ReadLine();
+
+            //check-quest 16:
+            Node<int> quest16 = BuildRandom();
+            Show(quest16);
+            int numberToDelete = rnd.Next(10);
+            Console.WriteLine($"Trying to delete the first: {numberToDelete}");
+            quest16 = Delete(quest16, numberToDelete);
+            Console.WriteLine();
+            Show(quest16);
+            Console.ReadLine();
+
+            //check-quest 17:
+            Node<int> quest17 = BuildRandom();
+            Show(quest17);
+            Console.WriteLine($"Trying to delete every: {numberToDelete}");
+            quest17 = Delete(quest17, numberToDelete);
+            Console.WriteLine();
+            Show(quest17);
+            Console.ReadLine();
+
+            //check-quest 18:
+            Node<int> quest18 = BuildRandom();
+            Show(quest18);
+            Console.WriteLine($"compressing: ");
+            quest18 = Compress(quest18);
+            Console.WriteLine();
+            Show(quest18);
+            Console.ReadLine();
+
+            //check-quest 19:
+            Node<int> quest19 = BuildRandom();
+            Show(quest19);
+            Console.WriteLine($"super compressing: ");
+            quest19 = NoRepete(quest19);
+            Console.WriteLine();
+            Show(quest19);
+            Console.ReadLine();
+
+            int[] values = { 2, 5, 1, 7, -4, 6, -1, 12, 3, 9, 11, 4, 7, -2, 11, -2 };
+            Node<int> list = Build(values);
+            Show(list);
+            Console.WriteLine(CountSequences(list));
+            Console.WriteLine();
+            Console.WriteLine(LongestSequenceLength(list));
+            Console.WriteLine();
+            Show(LengthSequence(list));
+            Show(SumOfSequences(list));
+            Console.ReadLine();
+
+            int[] numbers = { 2, 5, 7, 8, -3, -1, 0, 2, 4, 6, 5, 5, 6, 7, 12 };
+            int[] number1s = { 2, 5, 7, 8, -3, -1, 0, 2 };
+            int[] number2s = { 2, 8, 5, 7, -1, 0, 2, -3 };
+            Node<int> list2 = Build(number1s);
+            Node<int> list3 = Build(number2s);
+            Node<int> lst = Build(numbers);
+            Console.WriteLine(IsListContains(list3, lst));
+            Console.WriteLine(IsSubList(list2, lst));
+            Console.WriteLine(IsSubListWithSequence(list2, lst));
+            Console.WriteLine(MaxIncreasingSequenceLength(lst));
+            Console.ReadLine();
         }
 
-        public IntNode(int value)
+        public static Node<int> BuildRandom()
         {
-            this.value = value;
-            this.next = null;
+            Random rnd = new Random();
+            Node<int> lst = new Node<int>(rnd.Next(0, 10));
+            Node<int> pos = lst;
+
+            for (int i = 1; i < 15; i++)
+            {
+                pos.SetNext(new Node<int>(rnd.Next(0, 10)));
+                pos = pos.GetNext();
+            }
+
+            return lst;
         }
 
-        public int GetValue()
-        {
-            return this.value;
-        }
-
-        public IntNode GetNext()
-        {
-            return this.next;
-        }
-
-        public void SetNext(IntNode next)
-        {
-            this.next = next;
-        }
-
-        public void SetValue(int value) { this.value = value; }
-
-        //1
-        public static IntNode build()
+        public static Node<int> Build()
         {
             Console.Write($"Enter value for node 1: ");
             int value = int.Parse(Console.ReadLine());
-            IntNode lst = new IntNode(value);
-            IntNode pos = lst;
+            Node<int> lst = new Node<int>(value);
+            Node<int> pos = lst;
             for (int i = 1; i < 10; i++)
             {
                 Console.Write($"Enter value for node {i + 1}: ");
                 value = int.Parse(Console.ReadLine());
-                pos.SetNext(new IntNode(value));
+                pos.SetNext(new Node<int>(value));
                 pos = pos.GetNext();
             }
             return lst;
         }
 
-        //2
-        public static IntNode build(int len, int to, int from)
+        public static Node<int> Build(int len, int to, int from)
         {
             Random rnd = new Random();
-            IntNode lst = new IntNode(rnd.Next(from, to + 1));
-            IntNode pos = lst;
+            Node<int> lst = new Node<int>(rnd.Next(from, to + 1));
+            Node<int> pos = lst;
             for (int i = 1; i < len; i++)
             {
-                pos.SetNext(new IntNode(rnd.Next(from, to + 1)));
+                pos.SetNext(new Node<int>(rnd.Next(from, to + 1)));
                 pos = pos.GetNext();
             }
             return lst;
         }
 
-        //3
-        public static IntNode build(int[] arr)
+        public static Node<int> Build(int[] arr)
         {
-            IntNode lst = new IntNode(arr[0]);
-            IntNode pos = lst;
+            Node<int> lst = new Node<int>(arr[0]);
+            Node<int> pos = lst;
             for (int i = 1; i < arr.Length; i++)
             {
-                pos.SetNext(new IntNode(arr[i]));
+                pos.SetNext(new Node<int>(arr[i]));
                 pos = pos.GetNext();
             }
             return lst;
         }
 
-        //4
-        public static void Show(IntNode toShow)
+        public static void Show(Node<int> toShow)
         {
             if (toShow == null)
             {
@@ -97,7 +149,7 @@ namespace ConsoleApp4
             }
 
             Console.Write("[");
-            IntNode pos = toShow;
+            Node<int> pos = toShow;
             while (pos != null)
             {
                 Console.Write($" {pos.GetValue()} ");
@@ -107,10 +159,9 @@ namespace ConsoleApp4
             Console.WriteLine();
         }
 
-        //6
-        public bool exist(IntNode toExist, int number)
+        public static bool Exist(Node<int> toExist, int number)
         {
-            IntNode pos = toExist;
+            Node<int> pos = toExist;
             while (pos != null)
             {
                 if (number == pos.GetValue())
@@ -122,10 +173,9 @@ namespace ConsoleApp4
             return false;
         }
 
-        //7
-        public static IntNode getPosition(IntNode list, int value)
+        public static Node<int> GetPosition(Node<int> list, int value)
         {
-            IntNode pos = list;
+            Node<int> pos = list;
             while (pos != null)
             {
                 if (value == pos.GetValue())
@@ -137,10 +187,9 @@ namespace ConsoleApp4
             return null;
         }
 
-        //8
-        public static IntNode update(IntNode list, int value1, int value2)
+        public static Node<int> Update(Node<int> list, int value1, int value2)
         {
-            IntNode pos = getPosition(list, value1);
+            Node<int> pos = GetPosition(list, value1);
             if (pos != null)
             {
                 pos.SetValue(value2);
@@ -148,16 +197,15 @@ namespace ConsoleApp4
             return list;
         }
 
-        //9
-        public static IntNode getmax(IntNode lst)
+        public static Node<int> GetMax(Node<int> lst)
         {
             if (lst == null)
             {
                 return null;
             }
 
-            IntNode pos = lst;
-            IntNode maxNode = lst;
+            Node<int> pos = lst;
+            Node<int> maxNode = lst;
             int max = int.MinValue;
             while (pos != null)
             {
@@ -176,11 +224,10 @@ namespace ConsoleApp4
             return maxNode;
         }
 
-        //10
-        public int Length(IntNode lst)
+        public static int Length(Node<int> lst)
         {
             int count = 0;
-            IntNode pos = lst;
+            Node<int> pos = lst;
             while (pos != null)
             {
                 count++;
@@ -189,15 +236,15 @@ namespace ConsoleApp4
             return count;
         }
 
-        public static IntNode Swap(IntNode lst, int p)
+        public static Node<int> Swap(Node<int> lst, int p)
         {
             if (lst == null || p < 0)
             {
                 return lst;
             }
 
-            IntNode current = lst;
-            IntNode previous = null;
+            Node<int> current = lst;
+            Node<int> previous = null;
             int index = 0;
 
             while (current != null && index < p)
@@ -212,7 +259,7 @@ namespace ConsoleApp4
                 return lst;
             }
 
-            IntNode nextNode = current.GetNext();
+            Node<int> nextNode = current.GetNext();
 
             if (previous == null)
             {
@@ -229,16 +276,15 @@ namespace ConsoleApp4
             return lst;
         }
 
-        //11
-        public static IntNode delete(IntNode lst, int value)
+        public static Node<int> Delete(Node<int> lst, int value)
         {
             if (lst == null)
             {
                 return lst;
             }
 
-            IntNode current = lst;
-            IntNode previous = null;
+            Node<int> current = lst;
+            Node<int> previous = null;
 
             while (current != null && current.GetValue() != value)
             {
@@ -260,15 +306,14 @@ namespace ConsoleApp4
             return lst;
         }
 
-        //12
-        public static IntNode delX(IntNode lst, int value)
+        public static Node<int> DelX(Node<int> lst, int value)
         {
             while (lst != null && lst.GetValue() == value)
             {
-                lst = delete(lst, value);
+                lst = Delete(lst, value);
             }
 
-            IntNode current = lst;
+            Node<int> current = lst;
 
             while (current != null && current.GetNext() != null)
             {
@@ -285,66 +330,63 @@ namespace ConsoleApp4
             return lst;
         }
 
-        // לא היה 13
-
-        //14
-        public static IntNode compress(IntNode lst)
+        public static Node<int> Compress(Node<int> lst)
         {
             if (lst == null)
             {
                 return null;
-
             }
-            IntNode current = lst;
-            while (current != null && current.next != null)
+            Node<int> current = lst;
+            while (current != null && current.GetNext() != null)
             {
                 if (current.GetValue() == current.GetNext().GetValue())
                 {
-                    current.next = current.next.next;
+                    current.SetNext(current.GetNext().GetNext());
                 }
                 else
                 {
-                    current = current.next;
+                    current = current.GetNext();
                 }
             }
 
             return lst;
         }
 
-        //15
-        public static IntNode NoRepete(IntNode lst)
+        public static Node<int> NoRepete(Node<int> lst)
         {
             if (lst == null)
             {
                 return null;
             }
 
-            IntNode current = lst;
+            Node<int> current = lst;
 
-            while (current != null)
+            while (current != null && current.GetNext() != null)
             {
-                IntNode check = current;
-                IntNode previous = current;
+                Node<int> check = current;
 
                 while (check.GetNext() != null)
                 {
                     if (check.GetNext().GetValue() == current.GetValue())
                     {
-                        previous.SetNext(check.GetNext().GetNext());
+                        // Remove the duplicate node
+                        check.SetNext(check.GetNext().GetNext());
                     }
                     else
                     {
-                        previous = check;
+                        // Move to the next node
+                        check = check.GetNext();
                     }
-                    check = check.GetNext();
                 }
+
+                // Move to the next node to check for duplicates
                 current = current.GetNext();
             }
+
             return lst;
         }
 
-        //20
-        public static IntNode Concat(IntNode lst1, IntNode lst2)
+        public static Node<int> Concat(Node<int> lst1, Node<int> lst2)
         {
             if (lst1 == null)
             {
@@ -355,21 +397,20 @@ namespace ConsoleApp4
                 return lst1;
             }
 
-            IntNode ls3 = lst1;
-            IntNode temp = ls3;
+            Node<int> ls3 = lst1;
+            Node<int> temp = ls3;
 
             while (temp.GetNext() != null)
             {
                 temp = temp.GetNext();
             }
 
-            temp.next = lst2;
+            temp.SetNext(lst2);
 
             return ls3;
         }
 
-        //21
-        public static IntNode Concat2(IntNode lst1, IntNode lst2)
+        public static Node<int> Concat2(Node<int> lst1, Node<int> lst2)
         {
             if (lst1 == null)
             {
@@ -380,7 +421,7 @@ namespace ConsoleApp4
                 return lst1;
             }
 
-            IntNode temp = lst1;
+            Node<int> temp = lst1;
 
             while (temp.GetNext() != null)
             {
@@ -391,8 +432,7 @@ namespace ConsoleApp4
             return lst1;
         }
 
-        //22
-        public static IntNode Concat3(IntNode lst1, IntNode lst2)
+        public static Node<int> Concat3(Node<int> lst1, Node<int> lst2)
         {
             if (lst1 == null)
             {
@@ -403,7 +443,7 @@ namespace ConsoleApp4
                 return lst1;
             }
 
-            IntNode temp = lst1;
+            Node<int> temp = lst1;
 
             while (temp.GetNext() != null)
             {
@@ -412,10 +452,10 @@ namespace ConsoleApp4
 
             temp.SetNext(lst2);
 
-            IntNode current = lst2;
+            Node<int> current = lst2;
             while (current != null)
             {
-                IntNode nextNode = current.GetNext();
+                Node<int> nextNode = current.GetNext();
                 current.SetNext(null);
                 current = nextNode;
             }
@@ -423,10 +463,9 @@ namespace ConsoleApp4
             return lst1;
         }
 
-        //21
-        public static IntNode insertSorted(IntNode lst, int value)
+        public static Node<int> InsertSorted(Node<int> lst, int value)
         {
-            IntNode newNode = new IntNode(value);
+            Node<int> newNode = new Node<int>(value);
 
             if (lst == null || value < lst.GetValue())
             {
@@ -434,7 +473,7 @@ namespace ConsoleApp4
                 return newNode;
             }
 
-            IntNode current = lst;
+            Node<int> current = lst;
             while (current.GetNext() != null && current.GetNext().GetValue() < value)
             {
                 current = current.GetNext();
@@ -446,79 +485,25 @@ namespace ConsoleApp4
             return lst;
         }
 
-        public static IntNode buildSorted(int[] numbers)
+        public static Node<int> BuildSorted(int[] numbers)
         {
-            IntNode lst = null;
+            Node<int> lst = null;
 
             for (int i = 0; i < numbers.Length; i++)
             {
-                lst = insertSorted(lst, numbers[i]);
+                lst = InsertSorted(lst, numbers[i]);
             }
             return lst;
         }
 
-        public static IntNode insertSorted(IntNode lst, string value)
-        {
-            IntNode newNode = new IntNode(value);
-
-            if (lst == null || value.CompareTo(lst.GetValue()) < 0)
-            {
-                newNode.SetNext(lst);
-                return newNode;
-            }
-
-            IntNode current = lst;
-            while (current.GetNext() != null && current.GetNext().GetValue().CompareTo(value) < 0)
-            {
-                current = current.GetNext();
-            }
-
-            newNode.SetNext(current.GetNext());
-            current.SetNext(newNode);
-
-            return lst;
-        } //assuming the node class is getting a string
-
-        public static IntNode buildSorted(string[] names)
-        {
-            IntNode lst = null;
-
-            for (int i = 0; i < names.Length; i++)
-            {
-                lst = insertSorted(lst, names[i]);
-            }
-
-            return lst;
-        } //assuming the node class is getting a string
-
-        //22
-        public static bool isSortedString(IntNode lst)
+        public static bool IsSorted(Node<int> lst)
         {
             if (lst == null || lst.GetNext() == null)
             {
                 return true;
             }
 
-            IntNode current = lst;
-            while (current.GetNext() != null)
-            {
-                if (string.Compare(current.GetValue(), current.GetNext().GetValue()) > 0)
-                {
-                    return false;
-                }
-                current = current.GetNext();
-            }
-            return true;
-        } //assuming the node class is getting a string
-
-        public static bool isSorted(IntNode lst)
-        {
-            if (lst == null || lst.GetNext() == null)
-            {
-                return true;
-            }
-
-            IntNode current = lst;
+            Node<int> current = lst;
             while (current.GetNext() != null)
             {
                 if (current.GetValue() > current.GetNext().GetValue())
@@ -530,48 +515,46 @@ namespace ConsoleApp4
             return true;
         }
 
-        //23
-        public static IntNode UnionWithDuplicates(IntNode first, IntNode second)
+        public static Node<int> UnionWithDuplicates(Node<int> first, Node<int> second)
         {
-            IntNode combine = null;
+            Node<int> combine = null;
 
             while (first != null)
             {
-                combine = insertSorted(combine, first.GetValue());
+                combine = InsertSorted(combine, first.GetValue());
                 first = first.GetNext();
             }
 
             while (second != null)
             {
-                combine = insertSorted(combine, second.GetValue());
+                combine = InsertSorted(combine, second.GetValue());
                 second = second.GetNext();
             }
             return combine;
         }
 
-        public static IntNode UnionWithoutDuplicates(IntNode first, IntNode second)
+        public static Node<int> UnionWithoutDuplicates(Node<int> first, Node<int> second)
         {
-            IntNode result = UnionWithDuplicates(first, second);
-            IntNode finalsresult = NoRepete(result);
+            Node<int> result = UnionWithDuplicates(first, second);
+            Node<int> finalsresult = NoRepete(result);
             return finalsresult;
         }
 
-        //24
-        public static IntNode Intersection(IntNode first, IntNode second)
+        public static Node<int> Intersection(Node<int> first, Node<int> second)
         {
             if (first == null || second == null)
             {
                 return null;
             }
 
-            IntNode result = null;
-            IntNode last = null;
+            Node<int> result = null;
+            Node<int> last = null;
 
             while (first != null && second != null)
             {
                 if (first.GetValue() == second.GetValue())
                 {
-                    IntNode newNode = new IntNode(first.GetValue());
+                    Node<int> newNode = new Node<int>(first.GetValue());
                     if (result == null)
                     {
                         result = newNode;
@@ -597,25 +580,23 @@ namespace ConsoleApp4
             return result;
         }
 
-        //25
-        public static IntNode UnionWithoutDuplicatesUnsorted(IntNode first, IntNode second)
+        public static Node<int> UnionWithoutDuplicatesUnsorted(Node<int> first, Node<int> second)
         {
-            IntNode combined = Concat3(first, second);
+            Node<int> combined = Concat3(first, second);
 
-            IntNode result = NoRepete(combined);
+            Node<int> result = NoRepete(combined);
 
             return result;
         }
 
-        //26.1
-        public static int CountSequences(IntNode lst)
+        public static int CountSequences(Node<int> lst)
         {
             if (lst == null)
             {
                 return 0;
             }
 
-            IntNode current = lst;
+            Node<int> current = lst;
             int sequenceCount = 0;
 
             while (current != null)
@@ -630,15 +611,14 @@ namespace ConsoleApp4
             return sequenceCount;
         }
 
-        //26.2
-        public static int LongestSequenceLength(IntNode lst)
+        public static int LongestSequenceLength(Node<int> lst)
         {
             if (lst == null)
             {
                 return 0;
             }
 
-            IntNode current = lst;
+            Node<int> current = lst;
             int maxLength = 0;
             int currentLength = 0;
 
@@ -667,17 +647,16 @@ namespace ConsoleApp4
             return maxLength;
         }
 
-        //26.3
-        public static IntNode LengthSequence(IntNode lst)
+        public static Node<int> LengthSequence(Node<int> lst)
         {
             if (lst == null)
             {
                 return null;
             }
 
-            IntNode lengthList = null;
-            IntNode currentNode = null;
-            IntNode current = lst;
+            Node<int> lengthList = null;
+            Node<int> currentNode = null;
+            Node<int> current = lst;
 
             while (current != null)
             {
@@ -691,7 +670,7 @@ namespace ConsoleApp4
 
                 if (counter > 0)
                 {
-                    IntNode newNode = new IntNode(counter);
+                    Node<int> newNode = new Node<int>(counter);
                     if (lengthList == null)
                     {
                         lengthList = newNode;
@@ -713,17 +692,16 @@ namespace ConsoleApp4
             return lengthList;
         }
 
-        //26.4
-        public static IntNode SumOfSequences(IntNode lst)
+        public static Node<int> SumOfSequences(Node<int> lst)
         {
             if (lst == null)
             {
                 return null;
             }
 
-            IntNode sumList = null;
-            IntNode currentNode = null;
-            IntNode current = lst;
+            Node<int> sumList = null;
+            Node<int> currentNode = null;
+            Node<int> current = lst;
 
             while (current != null)
             {
@@ -737,7 +715,7 @@ namespace ConsoleApp4
 
                 if (sum > 0)
                 {
-                    IntNode newNode = new IntNode(sum);
+                    Node<int> newNode = new Node<int>(sum);
                     if (sumList == null)
                     {
                         sumList = newNode;
@@ -759,8 +737,7 @@ namespace ConsoleApp4
             return sumList;
         }
 
-        //27
-        public static int MaxIncreasingSequenceLength(IntNode lst)
+        public static int MaxIncreasingSequenceLength(Node<int> lst)
         {
             if (lst == null)
             {
@@ -769,7 +746,7 @@ namespace ConsoleApp4
 
             int maxLength = 0;
             int currentLength = 1;
-            IntNode current = lst;
+            Node<int> current = lst;
 
             while (current.GetNext() != null)
             {
@@ -795,8 +772,7 @@ namespace ConsoleApp4
             return maxLength;
         }
 
-        //26 twice????
-        public int UpSequencesByConsecutive(IntNode lst)
+        public static int UpSequencesByConsecutive(Node<int> lst)
         {
             if (lst == null)
             {
@@ -806,7 +782,7 @@ namespace ConsoleApp4
             int maxLength = 0;
             int currentLength = 1;
 
-            IntNode temp = lst;
+            Node<int> temp = lst;
 
             while (temp != null && temp.GetNext() != null)
             {
@@ -833,14 +809,13 @@ namespace ConsoleApp4
             return maxLength;
         }
 
-        //28
-        public static bool isSubList(IntNode list1, IntNode list2)
+        public static bool IsSubList(Node<int> list1, Node<int> list2)
         {
             if (list1 == null) return true;
             if (list2 == null) return false;
 
-            IntNode current1 = list1;
-            IntNode current2 = list2;
+            Node<int> current1 = list1;
+            Node<int> current2 = list2;
 
             while (current2 != null)
             {
@@ -855,13 +830,12 @@ namespace ConsoleApp4
             return false;
         }
 
-        //29
-        public static bool isSubListWithSequence(IntNode list1, IntNode list2)
+        public static bool IsSubListWithSequence(Node<int> list1, Node<int> list2)
         {
             if (list1 == null) return true;
             if (list2 == null) return false;
 
-            IntNode current1 = list1;
+            Node<int> current1 = list1;
 
             while (list2 != null)
             {
@@ -880,15 +854,14 @@ namespace ConsoleApp4
             return false;
         }
 
-        //30
-        public static bool isListContains(IntNode list1, IntNode list2)
+        public static bool IsListContains(Node<int> list1, Node<int> list2)
         {
-            IntNode current1 = list1;
+            Node<int> current1 = list1;
             while (current1 != null)
             {
                 bool found = false;
 
-                IntNode current2 = list2;
+                Node<int> current2 = list2;
                 while (current2 != null)
                 {
                     if (current1.GetValue() == current2.GetValue())
@@ -910,154 +883,65 @@ namespace ConsoleApp4
             return true;
         }
 
-        internal class Program
+
+
+        //27 second??????
+        public class CharNode
         {
-            static void Main(string[] args)
+            private char value;
+            private CharNode next;
+
+            public CharNode(char value)
             {
-                Random rnd = new Random();
-                //check-quest 5
-                IntNode check5_1 = build();
-                IntNode check5_2 = build(5, 20, 12);
-                int[] arrlist = { 1, 2, 3 };
-                IntNode check5_3 = build(arrlist);
-                Show(check5_1);
-                Show(check5_2);
-                Show(check5_3);
-                Console.ReadLine();
-
-                //check-quest 16:
-                IntNode quest16 = buildrandom();
-                Show(quest16);
-                int numberToDelete = rnd.Next(10);
-                Console.WriteLine($"Trying to delete the first: {numberToDelete}");
-                quest16 = delete(quest16, numberToDelete);
-                Console.WriteLine();
-                Show(quest16);
-                Console.ReadLine();
-
-                //check-quest 17:
-                IntNode quest17 = buildrandom();
-                Show(quest17);
-                Console.WriteLine($"Trying to delete every: {numberToDelete}");
-                quest17 = delete(quest17, numberToDelete);
-                Console.WriteLine();
-                Show(quest17);
-                Console.ReadLine();
-
-                //check-quest 18:
-                IntNode quest18 = buildrandom();
-                Show(quest18);
-                Console.WriteLine($"compressing: ");
-                quest18 = compress(quest18);
-                Console.WriteLine();
-                Show(quest18);
-                Console.ReadLine();
-
-                //check-quest 19:
-                IntNode quest19 = buildrandom();
-                Show(quest19);
-                Console.WriteLine($"super compressing: ");
-                quest19 = NoRepete(quest19);
-                Console.WriteLine();
-                Show(quest19);
-                Console.ReadLine();
-
-                int[] values = { 2, 5, 1, 7, -4, 6, -1, 12, 3, 9, 11, 4, 7, -2, 11, -2 };
-                IntNode list = build(values);
-                Show(list);
-                Console.WriteLine(CountSequences(list));
-                Console.WriteLine();
-                Console.WriteLine(LongestSequenceLength(list));
-                Console.WriteLine();
-                Show(LengthSequence(list));
-                Show(SumOfSequences(list));
-                Console.ReadLine();
-
-                int[] numbers = { 2, 5, 7, 8, -3, -1, 0, 2, 4, 6, 5, 5, 6, 7, 12 };
-                int[] number1s = { 2, 5, 7, 8, -3, -1, 0, 2 };
-                int[] number2s = { 2, 8, 5, 7, -1, 0, 2, -3 };
-                IntNode list2 = build(number1s);
-                IntNode list3 = build(number2s);
-                IntNode lst = build(numbers);
-                Console.WriteLine(isListContains(list3, lst));
-                Console.WriteLine(isSubList(list2, lst));
-                Console.WriteLine(isSubListWithSequence(list2, lst));
-                Console.WriteLine(MaxIncreasingSequenceLength(lst));
-                Console.ReadLine();
-            }
-            public static IntNode buildrandom()
-            {
-                Random rnd = new Random();
-                IntNode lst = new IntNode(rnd.Next(0, 10));
-                IntNode pos = lst;
-
-                for (int i = 1; i < 15; i++)
-                {
-                    pos.SetNext(new IntNode(rnd.Next(0, 10)));
-                    pos = pos.GetNext();
-                }
-
-                return lst;
-            }
-        }
-    }
-
-    //27 second??????
-    public class CharNode
-    {
-        private char value;
-        private CharNode next;
-
-        public CharNode(char value)
-        {
-            this.value = value;
-            this.next = null;
-        }
-
-        public char GetValue() { return value; }
-        public CharNode GetNext() { return next; }
-        public void SetNext(CharNode next) { this.next = next; }
-        public CharNode LongestWord(CharNode lst)
-        {
-            CharNode current = lst;
-            CharNode longestWordHead = null;
-            CharNode longestWordTail = null;
-            int longestLength = 0;
-
-            while (current != null)
-            {
-                CharNode temp = current;
-                int length = 0;
-
-                while (temp != null && temp.GetValue() != '*')
-                {
-                    length++;
-                    temp = temp.GetNext();
-                }
-
-                if (temp != null && temp.GetValue() == '*')
-                {
-                    length++;
-                }
-
-                if (length > longestLength)
-                {
-                    longestLength = length;
-                    longestWordHead = current;
-                    longestWordTail = temp;
-                }
-
-                if (temp != null)
-                {
-                    current = temp.GetNext();
-                }
-                else
-                {
-                    current = null;
-                }
+                this.value = value;
+                this.next = null;
             }
 
-            return longestWordHead;
+            public char GetValue() { return value; }
+            public CharNode GetNext() { return next; }
+            public void SetNext(CharNode next) { this.next = next; }
+            public CharNode LongestWord(CharNode lst)
+            {
+                CharNode current = lst;
+                CharNode longestWordHead = null;
+                CharNode longestWordTail = null;
+                int longestLength = 0;
+
+                while (current != null)
+                {
+                    CharNode temp = current;
+                    int length = 0;
+
+                    while (temp != null && temp.GetValue() != '*')
+                    {
+                        length++;
+                        temp = temp.GetNext();
+                    }
+
+                    if (temp != null && temp.GetValue() == '*')
+                    {
+                        length++;
+                    }
+
+                    if (length > longestLength)
+                    {
+                        longestLength = length;
+                        longestWordHead = current;
+                        longestWordTail = temp;
+                    }
+
+                    if (temp != null)
+                    {
+                        current = temp.GetNext();
+                    }
+                    else
+                    {
+                        current = null;
+                    }
+                }
+
+                return longestWordHead;
+            }
         }
     }
 }
