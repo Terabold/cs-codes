@@ -8,7 +8,7 @@ namespace ConsoleApp32
 {
     class Bicycle
     {
-        private double kilometraz;
+        protected double kilometraz;
         private string color;
         private int maxspeed;
 
@@ -31,7 +31,7 @@ namespace ConsoleApp32
         bool highgear;
 
         public mountainbicycle(double kilometraz, string color, int maxspeed, int maxheight, bool highgear)
-            :base(kilometraz, color, maxspeed)
+            : base(kilometraz, color, maxspeed)
         {
             this.maxheight = maxheight;
             this.highgear = highgear;
@@ -40,5 +40,34 @@ namespace ConsoleApp32
         public void sethighgear(bool ishighgear) { this.highgear = ishighgear; }
     }
 
-    //class stunbike : Bicycle
+    class stunbike : Bicycle
+    {
+        private bool iscompatible;
+        private double jumpheight;
+
+        public stunbike(int kilometraz, string color, int maxspeed, bool iscompatible, double jumpheight)
+            : base(kilometraz, color, maxspeed)
+        {
+            this.iscompatible = iscompatible;
+            this.jumpheight = jumpheight;
+        }
+
+        public void Jump(double distance) { this.jumpheight += distance; }
+    }
+
+    class racebikes : Bicycle
+    {
+        DateTime lastcheck;
+
+        public racebikes(int kilometraz, string color, int maxspeed, DateTime lastcheck)
+            : base(kilometraz, color, maxspeed)
+        {
+            this.lastcheck = lastcheck;
+        }
+
+        public void race(double distance, double speed)
+        {
+             this.kilometraz += distance/speed;
+        }
+    }
 }

@@ -300,7 +300,7 @@ namespace ConsoleApp32
         //q6
         public static bool is2childsalltree(BinNode<int> tr)
         {
-            if (tr == null) { return true; } 
+            if (tr == null) { return true; }
 
             if (!tr.HasLeft() && !tr.HasRight()) { return true; }
 
@@ -309,5 +309,30 @@ namespace ConsoleApp32
             return is2childsalltree(tr.GetLeft()) && is2childsalltree(tr.GetRight());
         }
 
+        //get tree line by line
+        public static void BFS(BinNode<int> bt)
+        {
+            Queue<BinNode<int>> qu = new Queue<BinNode<int>>();
+            BinNode<int> curr;
+            qu.Insert(bt);
+
+            while (!qu.IsEmpty())
+            {
+                curr = qu.Remove();
+                Console.WriteLine(curr.GetValue());
+                if (curr.HasLeft()) qu.Insert(curr.GetLeft());
+                if (curr.HasRight()) qu.Insert(curr.GetRight());
+            }
+        }
+
+        public static void DFS(BinNode<int> bt)
+        {
+            if (bt == null)
+                return;
+
+            Console.WriteLine(bt.GetValue()); // Visit the node
+            if (bt.HasLeft()) DFS(bt.GetLeft()); // Recur on left subtree
+            if (bt.HasRight()) DFS(bt.GetRight()); // Recur on right subtree
+        }
     }
 }
