@@ -334,5 +334,103 @@ namespace ConsoleApp32
             if (bt.HasLeft()) DFS(bt.GetLeft()); // Recur on left subtree
             if (bt.HasRight()) DFS(bt.GetRight()); // Recur on right subtree
         }
+
+        //פעולה המקבלת עץ בינארי ומעדכנת את ערכי הצמתים הזוגיים לחצי מערכם. 
+        public static void Update(BinNode<int> t)
+        {
+            if (t != null)
+            {
+                if (t.GetValue() % 2 == 0)
+                    t.SetValue(t.GetValue() / 2);
+                Update(t.GetLeft());
+                Update(t.GetRight());
+            }
+        }
+
+        //פעולה המקבלת עץ בינארי ומוסיפה אח לכל צומת שהוא בן יחיד. ערך האח יהיה .0 
+        public static int ChildKod(BinNode<int> t)
+        {
+            if (t.GetLeft() == t.GetRight()) return 0;
+            if (t.GetLeft() != null && t.GetRight() != null) return 3;
+            if (t.GetLeft() != null) return 1;
+            return 2;
+        }
+
+        public static void AddBro(BinNode<int> t)
+        {
+            int ck = ChildKod(t);
+            if (ck != 0)
+            {
+                if (ck == 1)
+                    t.SetLeft(new BinNode<int>(0));
+                if (ck == 2)
+                    t.SetRight(new BinNode<int>(0));
+                AddBro(t.GetLeft());
+                AddBro(t.GetRight());
+            }
+        }
+        //פעולה המחזירה את מספר הצמתים בעץ שיש להם תוכן זוגי.
+        public static int NumInfoZugi(BinNode<int> t)
+        {
+            if (t == null) return 0;
+            if (t.GetValue() % 2 == 0)
+                return 1 + NumInfoZugi(t.GetLeft()) + NumInfoZugi(t.GetRight());// לסכום 1 הוספת
+            return NumInfoZugi(t.GetLeft()) + NumInfoZugi(t.GetRight());
+        }
+
+        //הפעולה מקבלת עץ בינארי ומחזירה את סכום ערכי הצמתים שהם בנים ימניים.
+        public static int SumRightChild(BinNode<int> t)
+        {
+            if (t == null) return 0;
+            if (t.GetRight() != null)
+                return t.GetRight().GetValue() + SumRightChild(t.GetLeft()) +
+                 SumRightChild(t.GetRight());
+            return SumRightChild(t.GetLeft());
+        }
+
+        public static BinNode<int> Aba(BinNode<int> bt, int x)
+        {
+            if (bt == null)
+                return null;
+            if (bt.GetRight() != null && bt.GetRight().GetValue() == x)
+                return bt;
+            if (bt.GetLeft() != null && bt.GetLeft().GetValue() == x)
+                return bt;
+            BinNode<int> temp = Aba(bt.GetLeft(), x);
+            if (temp == null)
+            {
+                return Aba(bt.GetRight(), x);
+            }
+            return temp;
+        }
+
+        public static bool ishilkeo(BinNode<int> t)
+        {
+            if (t == null) return true; // עץ ריק תקין
+            if (!t.HasLeft() && !t.HasRight()) return true; // עלה תקין תמיד
+            if (!t.HasLeft() || !t.HasRight()) return false; // צומת עם בן אחד בלבד לא תקין
+
+            int leftVal = t.GetLeft().GetValue();
+            int rightVal = t.GetRight().GetValue();
+
+            if (leftVal % rightVal != 0 || leftVal / rightVal != t.GetValue()) return false;
+
+            return ishilkeo(t.GetLeft()) && ishilkeo(t.GetRight());
+        }
+
+        //זה למשל מחשב ומחזיר את הסכום של השורש עם הסכום הכי גדול
+        public static int biggestSum(BinNode<int> bt)
+        {
+            if (bt == null) return 0;
+            if (!bt.HasLeft() && !bt.HasRight()) return bt.GetValue();
+            return Math.Max(biggestSum(bt.GetLeft()), biggestSum(bt.GetRight())) + bt.GetValue();
+        }
+
+        //רק בארוך^
+        public static int biggestBranchLength(BinNode<int> bt)
+        {
+            if (bt == null) return 0;
+            return Math.Max(biggestBranchLength(bt.GetLeft()), biggestBranchLength(bt.GetRight())) + 1;
+        }
     }
 }
