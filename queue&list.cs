@@ -117,5 +117,13 @@ namespace ConsoleApp32
             }
         }
 
+        public static void ReverseQueue(Queue<int> q)
+        {
+            if (!q.IsEmpty == 0) return; // Base case
+
+            int front = q.Remove(); // Remove front element
+            ReverseQueue(q);         // Reverse the rest of the queue
+            q.insert(front);        // Add the front element back at the end
+        }
     }
 }
