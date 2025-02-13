@@ -28,8 +28,8 @@ The **Utils** class includes helper methods to:
 
 ## How to Run
 
-1. Open the project in your preferred C# IDE (e.g., Visual Studio).
-2. Build the project to compile the code.
+1. Open the project in your Visual Studio.
+2. Add in refrences Unit4.dll
 3. Execute the relevant functions or test cases to check the operations of each topic.
 4. Use the **Utils** class to verify the correctness of your code.
 
